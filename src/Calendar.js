@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import './Calendar.css';
+import { Button } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createCalendarEvent } from './graphql/mutations';
 import { listCalendarEvents } from './graphql/queries';
 import { deleteAllEvents } from './utils';
 
+
 const Calendar = () => {
   const {uuid} = useParams(); 
-  const [hourlyBlocks, setHourlyBlocks] = useState({}); // Make sure this line is present
+  const [hourlyBlocks, setHourlyBlocks] = useState({});
   const [isDragging, setIsDragging] = useState(false);
   const [dragValue, setDragValue] = useState(null);
   const [shouldFetchData, setShouldFetchData] = useState(false);
@@ -18,7 +21,7 @@ const Calendar = () => {
       const result = await API.graphql(graphqlOperation(listCalendarEvents, {
         filter: {
           uuid: {
-            eq: uuid  // Only fetch events that match the given UUID
+            eq: uuid
           }
         }
       }));
@@ -29,7 +32,6 @@ const Calendar = () => {
         Object.keys(itemHourlyBlocks).forEach(day => {
           aggregatedHourlyBlocks[day] ??= {};
           Object.keys(itemHourlyBlocks[day]).forEach(hour => {
-            // Assuming 1 is the value for a blocked hour and 0 for free
             aggregatedHourlyBlocks[day][hour] ??= itemHourlyBlocks[day][hour];
           });
         });
@@ -39,7 +41,7 @@ const Calendar = () => {
       console.error('Could not fetch calendar data:', error);
     }
     setShouldFetchData(false);  // Reset the flag
-  }, [uuid]);  // <-- Include uuid in the dependency array
+  }, [uuid]);
   
 
   useEffect(() => {
@@ -86,8 +88,8 @@ const Calendar = () => {
 
   return (
     <div className="calendar" onMouseUp={handleMouseUp}>
-      <button onClick={() => setShouldFetchData(true)}>Fetch Data</button>
-      <button onClick={() => deleteAllEvents(String(uuid))}>Delete All Events</button>
+      <Button onClick={() => setShouldFetchData(true)}>Fetch Data</Button>
+      <Button onClick={() => deleteAllEvents(String(uuid))}>Delete All Events</Button>
       <div className="calendar-row header">
         <div className="calendar-cell"></div>
         {days.map(day => (
