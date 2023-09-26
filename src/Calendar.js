@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';  // Import the UUID package
+// import { v4 as uuidv4 } from 'uuid';
 import './Calendar.css';
 import { API, graphqlOperation } from 'aws-amplify';
-import { getCalendarEvent } from './graphql/queries';
+// import { getCalendarEvent } from './graphql/queries';
 import { createCalendarEvent } from './graphql/mutations';
+import { listCalendarEvents } from './graphql/queries';
+import { deleteAllEvents } from './utils';
 
-const Calendar = ({ uuid = uuidv4() }) => {
+const Calendar = ({ uuid = "c359c11f-0593-4f0f-92c1-7f93d9783bd5" }) => {  // Replace "YourFixedUUIDHere" with your fixed UUID
   const [hourlyBlocks, setHourlyBlocks] = useState({});
   const [isDragging, setIsDragging] = useState(false);
   const [dragValue, setDragValue] = useState(null);
@@ -16,21 +18,31 @@ const Calendar = ({ uuid = uuidv4() }) => {
 
     const fetchData = async () => {
       try {
-        const result = await API.graphql(graphqlOperation(getCalendarEvent, { uuid: uuid }));
-        if (result.data.getCalendarEvent && result.data.getCalendarEvent.hourlyBlocks) {
-          setHourlyBlocks(result.data.getCalendarEvent.hourlyBlocks);
-        } else {
-          setHourlyBlocks({});
+        const result = await API.graphql(graphqlOperation(listCalendarEvents));
+        const aggregatedHourlyBlocks = {};
+        if (result.data.listCalendarEvents.items) {
+          result.data.listCalendarEvents.items.forEach(item => {
+            const itemHourlyBlocks = JSON.parse(item.hourlyBlocks);
+            Object.keys(itemHourlyBlocks).forEach(day => {
+              if (!aggregatedHourlyBlocks[day]) {
+                aggregatedHourlyBlocks[day] = {};
+              }
+              Object.keys(itemHourlyBlocks[day]).forEach(hour => {
+                // Assuming 1 is the value for a blocked hour and 0 for free
+                aggregatedHourlyBlocks[day][hour] = aggregatedHourlyBlocks[day][hour] || itemHourlyBlocks[day][hour];
+              });
+            });
+          });
+          setHourlyBlocks(aggregatedHourlyBlocks);
         }
       } catch (error) {
         console.error('Could not fetch calendar data:', error);
-        setHourlyBlocks({});
       }
       setShouldFetchData(false);  // Reset the flag
     };
 
     fetchData();
-  }, [shouldFetchData, uuid]);
+  }, [shouldFetchData]);
 
   const handleMouseDown = async (day, hour) => {
     setIsDragging(true);
@@ -74,6 +86,7 @@ const Calendar = ({ uuid = uuidv4() }) => {
   return (
     <div className="calendar" onMouseUp={handleMouseUp}>
       <button onClick={() => setShouldFetchData(true)}>Fetch Data</button>
+      <button onClick={deleteAllEvents}>Delete All Events</button>
       <div className="calendar-row header">
         <div className="calendar-cell"></div>
         {days.map(day => (
