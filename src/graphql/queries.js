@@ -55,13 +55,8 @@ export const listCalendarEvents = /* GraphQL */ `
       items {
         uuid
         hourlyBlocks
-        id
-        createdAt
-        updatedAt
-        __typename
       }
       nextToken
-      __typename
     }
   }
 `;
