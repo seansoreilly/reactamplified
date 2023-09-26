@@ -43,6 +43,7 @@ const Calendar = ({ uuid = uuidv4() }) => {
   
     try {
       const input = {
+        id: uuid,
         uuid: uuid,
         hourlyBlocks: JSON.stringify(newHourlyBlocks),
       };
