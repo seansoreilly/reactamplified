@@ -15,7 +15,13 @@ const Calendar = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const result = await API.graphql(graphqlOperation(listCalendarEvents));
+      const result = await API.graphql(graphqlOperation(listCalendarEvents, {
+        filter: {
+          uuid: {
+            eq: uuid  // Only fetch events that match the given UUID
+          }
+        }
+      }));
       const { items } = result.data.listCalendarEvents;
       const aggregatedHourlyBlocks = {};
       items.forEach(item => {
@@ -33,7 +39,8 @@ const Calendar = () => {
       console.error('Could not fetch calendar data:', error);
     }
     setShouldFetchData(false);  // Reset the flag
-  }, []);
+  }, [uuid]);  // <-- Include uuid in the dependency array
+  
 
   useEffect(() => {
     if (shouldFetchData) {
@@ -82,7 +89,7 @@ const Calendar = () => {
   return (
     <div className="calendar" onMouseUp={handleMouseUp}>
       <button onClick={() => setShouldFetchData(true)}>Fetch Data</button>
-      <button onClick={deleteAllEvents}>Delete All Events</button>
+      <button onClick={() => deleteAllEvents(String(uuid))}>Delete All Events</button>
       <div className="calendar-row header">
         <div className="calendar-cell"></div>
         {days.map(day => (
