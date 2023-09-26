@@ -7,3 +7,10 @@ type Todo @model {
   name: String!
   description: String
 }
+
+type CalendarEvent @model {
+  id: ID!
+  uuid: String!
+  hourlyBlocks: String
+}
+

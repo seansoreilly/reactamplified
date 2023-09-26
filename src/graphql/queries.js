@@ -33,3 +33,35 @@ export const listTodos = /* GraphQL */ `
     }
   }
 `;
+export const getCalendarEvent = /* GraphQL */ `
+  query GetCalendarEvent($id: ID!) {
+    getCalendarEvent(id: $id) {
+      id
+      uuid
+      hourlyBlocks
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listCalendarEvents = /* GraphQL */ `
+  query ListCalendarEvents(
+    $filter: ModelCalendarEventFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listCalendarEvents(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        uuid
+        hourlyBlocks
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
