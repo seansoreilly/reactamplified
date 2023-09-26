@@ -54,6 +54,7 @@ export const createCalendarEvent = /* GraphQL */ `
     createCalendarEvent(input: $input, condition: $condition) {
       uuid
       hourlyBlocks
+      id
       createdAt
       updatedAt
       __typename
