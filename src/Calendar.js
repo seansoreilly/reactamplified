@@ -43,9 +43,7 @@ const Calendar = () => {
   
 
   useEffect(() => {
-    if (shouldFetchData) {
       fetchData();
-    }
   }, [shouldFetchData, fetchData]);
 
   const handleMouseDown = useCallback(async (day, hour) => {
