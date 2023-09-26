@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 import './Calendar.css';
 import { API, graphqlOperation } from 'aws-amplify';
 import { createCalendarEvent } from './graphql/mutations';
 import { listCalendarEvents } from './graphql/queries';
 import { deleteAllEvents } from './utils';
 
-const Calendar = ({ uuid = "c359c11f-0593-4f0f-92c1-7f93d9783bd5" }) => {
-  const [hourlyBlocks, setHourlyBlocks] = useState({});
+const Calendar = () => {
+  const {uuid} = useParams(); 
+  const [hourlyBlocks, setHourlyBlocks] = useState({}); // Make sure this line is present
   const [isDragging, setIsDragging] = useState(false);
   const [dragValue, setDragValue] = useState(null);
   const [shouldFetchData, setShouldFetchData] = useState(false);
