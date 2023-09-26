@@ -36,9 +36,9 @@ export const listTodos = /* GraphQL */ `
 export const getCalendarEvent = /* GraphQL */ `
   query GetCalendarEvent($id: ID!) {
     getCalendarEvent(id: $id) {
-      id
       uuid
       hourlyBlocks
+      id
       createdAt
       updatedAt
       __typename
@@ -53,9 +53,9 @@ export const listCalendarEvents = /* GraphQL */ `
   ) {
     listCalendarEvents(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
-        id
         uuid
         hourlyBlocks
+        id
         createdAt
         updatedAt
         __typename

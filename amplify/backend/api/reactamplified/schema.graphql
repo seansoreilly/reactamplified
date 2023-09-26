@@ -9,7 +9,6 @@ type Todo @model {
 }
 
 type CalendarEvent @model {
-  id: ID!
   uuid: String!
   hourlyBlocks: String
 }

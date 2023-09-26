@@ -52,9 +52,9 @@ export const createCalendarEvent = /* GraphQL */ `
     $condition: ModelCalendarEventConditionInput
   ) {
     createCalendarEvent(input: $input, condition: $condition) {
-      id
       uuid
       hourlyBlocks
+      id
       createdAt
       updatedAt
       __typename
@@ -67,9 +67,9 @@ export const updateCalendarEvent = /* GraphQL */ `
     $condition: ModelCalendarEventConditionInput
   ) {
     updateCalendarEvent(input: $input, condition: $condition) {
-      id
       uuid
       hourlyBlocks
+      id
       createdAt
       updatedAt
       __typename
@@ -82,9 +82,9 @@ export const deleteCalendarEvent = /* GraphQL */ `
     $condition: ModelCalendarEventConditionInput
   ) {
     deleteCalendarEvent(input: $input, condition: $condition) {
-      id
       uuid
       hourlyBlocks
+      id
       createdAt
       updatedAt
       __typename

@@ -42,9 +42,9 @@ export const onCreateCalendarEvent = /* GraphQL */ `
     $filter: ModelSubscriptionCalendarEventFilterInput
   ) {
     onCreateCalendarEvent(filter: $filter) {
-      id
       uuid
       hourlyBlocks
+      id
       createdAt
       updatedAt
       __typename
@@ -56,9 +56,9 @@ export const onUpdateCalendarEvent = /* GraphQL */ `
     $filter: ModelSubscriptionCalendarEventFilterInput
   ) {
     onUpdateCalendarEvent(filter: $filter) {
-      id
       uuid
       hourlyBlocks
+      id
       createdAt
       updatedAt
       __typename
@@ -70,9 +70,9 @@ export const onDeleteCalendarEvent = /* GraphQL */ `
     $filter: ModelSubscriptionCalendarEventFilterInput
   ) {
     onDeleteCalendarEvent(filter: $filter) {
-      id
       uuid
       hourlyBlocks
+      id
       createdAt
       updatedAt
       __typename
