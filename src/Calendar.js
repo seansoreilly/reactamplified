@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';  // Import the UUID package
 import './Calendar.css';
 import { API, graphqlOperation } from 'aws-amplify';
 import { getCalendarEvent } from './graphql/queries';
-import { updateCalendarEvent } from './graphql/mutations';
+import { createCalendarEvent } from './graphql/mutations';
 
 const Calendar = ({ uuid = uuidv4() }) => {
   const [hourlyBlocks, setHourlyBlocks] = useState({});
@@ -40,17 +40,16 @@ const Calendar = ({ uuid = uuidv4() }) => {
     newHourlyBlocks[day] = dayData;
     setHourlyBlocks(newHourlyBlocks);
     setDragValue(!dayData[hour]);
-  
+
     try {
       const input = {
-        id: uuid,
         uuid: uuid,
         hourlyBlocks: JSON.stringify(newHourlyBlocks),
       };
-      const result = await API.graphql(graphqlOperation(updateCalendarEvent, { input }));
-      console.log('Successfully updated DynamoDB:', result);
+      const result = await API.graphql(graphqlOperation(createCalendarEvent, { input }));  // Changed this line
+      console.log('Successfully created in DynamoDB:', result);
     } catch (error) {
-      console.error('Could not update DynamoDB:', error);
+      console.error('Could not create in DynamoDB:', error);
     }
   };
   
