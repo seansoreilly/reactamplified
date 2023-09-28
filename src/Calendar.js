@@ -8,7 +8,6 @@ import { createCalendarEvent } from "./graphql/mutations";
 import { listCalendarEvents } from "./graphql/queries";
 import { deleteAllEvents } from "./utils";
 import { Card, useTheme } from "@aws-amplify/ui-react";
-import "@aws-amplify/ui-react/styles.css";
 
 const Calendar = () => {
   const { uuid } = useParams();
