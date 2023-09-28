@@ -7,6 +7,8 @@ import { API, graphqlOperation } from "aws-amplify";
 import { createCalendarEvent } from "./graphql/mutations";
 import { listCalendarEvents } from "./graphql/queries";
 import { deleteAllEvents } from "./utils";
+import { Card, useTheme } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
 
 const Calendar = () => {
   const { uuid } = useParams();
@@ -15,7 +17,7 @@ const Calendar = () => {
   const [dragValue, setDragValue] = useState(null);
   const [shouldFetchData, setShouldFetchData] = useState(false);
   const [selectedColor, setSelectedColor] = useState("#FF5733"); // Default color
-
+  const theme = useTheme(); // <-- Add this line
   const handleColorChange = (e) => {
     setSelectedColor(e.target.value);
   };
@@ -53,25 +55,26 @@ const Calendar = () => {
     fetchData();
   }, [shouldFetchData, fetchData]);
 
-  const handleMouseDown = useCallback(async (day, hour) => {
-    setIsDragging(true);
-    const newHourlyBlocks = { ...hourlyBlocks };
-    const dayData = newHourlyBlocks[day] ?? {};
-    let currentBlock = dayData[hour] ?? {};
-  
-    // If it's a boolean, convert it to an object
-    if (typeof currentBlock === 'boolean') {
-      currentBlock = { selected: currentBlock, color: selectedColor };
-    }
-  
-    // Toggle selected state and set color
-    currentBlock.selected = !currentBlock.selected;
-    currentBlock.color = selectedColor;
-  
-    dayData[hour] = currentBlock;
-    newHourlyBlocks[day] = dayData;
-    setHourlyBlocks(newHourlyBlocks);
-    setDragValue(currentBlock);
+  const handleMouseDown = useCallback(
+    async (day, hour) => {
+      setIsDragging(true);
+      const newHourlyBlocks = { ...hourlyBlocks };
+      const dayData = newHourlyBlocks[day] ?? {};
+      let currentBlock = dayData[hour] ?? {};
+
+      // If it's a boolean, convert it to an object
+      if (typeof currentBlock === "boolean") {
+        currentBlock = { selected: currentBlock, color: selectedColor };
+      }
+
+      // Toggle selected state and set color
+      currentBlock.selected = !currentBlock.selected;
+      currentBlock.color = selectedColor;
+
+      dayData[hour] = currentBlock;
+      newHourlyBlocks[day] = dayData;
+      setHourlyBlocks(newHourlyBlocks);
+      setDragValue(currentBlock);
 
       try {
         const input = {
@@ -119,34 +122,56 @@ const Calendar = () => {
 
   return (
     <div className="calendar" onMouseUp={handleMouseUp}>
-      <Button onClick={() => setShouldFetchData(true)}>Fetch Data</Button>
-      <Button onClick={() => deleteAllEvents(String(uuid))}>Delete All Events</Button>
-      <input type="color" value={selectedColor} onChange={handleColorChange} />
-      <div className="calendar-row header">
-        <div className="calendar-cell"></div>
-        {days.map(day => (
-          <div key={day} className="calendar-cell">{day}</div>
-        ))}
-      </div>
-      {hours.map(hour => (
-        <div key={hour} className="calendar-row">
-          {/* Add this line to show the times in the left column */}
-          <div className="calendar-cell" key={`hour-${hour}`}>{`${hour}:00`}</div>
-  
-          {days.map(day => {
-            const block = hourlyBlocks[day]?.[hour] ?? {};
-            return (
-              <div
-                key={`${day}-${hour}`}
-                className={`calendar-cell ${block.selected ? 'selected' : ''}`}
-                style={block.selected ? { backgroundColor: block.color } : {}}
-                onMouseDown={() => handleMouseDown(day, hour)}
-                onMouseEnter={() => handleMouseEnter(day, hour)}
-              ></div>
-            );
-          })}
+      <Card>
+        <Button onClick={() => setShouldFetchData(true)}>Fetch Data</Button>
+        <Button onClick={() => deleteAllEvents(String(uuid))}>
+          Delete All Events
+        </Button>
+        <input
+          type="color"
+          value={selectedColor}
+          onChange={handleColorChange}
+        />
+        <div className="calendar-row header">
+          <div className="calendar-cell"></div>
+          {days.map((day) => (
+            <div key={day} className="calendar-cell">
+              {day}
+            </div>
+          ))}
         </div>
-      ))}
+        {hours.map((hour) => (
+          <div key={hour} className="calendar-row">
+            {/* Add this line to show the times in the left column */}
+            <div
+              className="calendar-cell"
+              key={`hour-${hour}`}
+            >{`${hour}:00`}</div>
+
+            {days.map((day) => {
+              const block = hourlyBlocks[day]?.[hour] ?? {};
+              return (
+                <div
+                  key={`${day}-${hour}`}
+                  className={`calendar-cell ${
+                    block.selected ? "selected" : ""
+                  }`}
+                  style={{
+                    backgroundColor: block.selected
+                      ? block.color
+                      : (theme?.colors?.background?.primary?.value || ''),
+                    borderRadius: theme?.borderRadius?.default?.value || '',
+                    fontSize: theme?.fontSizes?.body?.value || '',
+                    fontWeight: theme?.fontWeights?.regular?.value || '',
+                  }}
+                  onMouseDown={() => handleMouseDown(day, hour)}
+                  onMouseEnter={() => handleMouseEnter(day, hour)}
+                ></div>
+              );
+            })}
+          </div>
+        ))}
+      </Card>
     </div>
   );
 };
